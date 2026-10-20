@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f59e0b">
+<title>blabla DLALF</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚗</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap">
+<style>
+:root{
+  --bg:#efefed; --surface:#ffffff; --ink:#26241f; --muted:#64615a; --line:#d9d8d4;
+  --accent:#f59e0b; --accent-ink:#2b1a00; --accent-text:#a85d00; --road:#fbbf24; --road-ink:#2b1a00;
+  --soft:#e6e5e2; --danger:#b3261e; --ok:#1f7a3f;
+  --f-display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root{
+  --bg:#1b1b1a; --surface:#262624; --ink:#eeede9; --muted:#a8a69f; --line:#3a3936;
+  --accent:#f5a524; --accent-ink:#2b1a00; --accent-text:#fbbf5a; --road:#fbbf24; --road-ink:#2b1a00;
+  --soft:#31302d; --danger:#ff8a80; --ok:#6fd49a; color-scheme:dark } }
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--f-body); font-size:16px; line-height:1.45}
+.wrap{max-width:640px; margin:0 auto; padding:20px 16px 96px; display:flex; flex-direction:column; gap:18px}
+h1,h2,h3{font-family:var(--f-display); margin:0; text-wrap:balance}
+h1{font-size:1.9rem; font-weight:800; letter-spacing:-.01em}
+.road{height:6px; background:repeating-linear-gradient(90deg,var(--road) 0 22px,transparent 22px 36px); border-radius:3px; margin-top:8px; width:180px}
+.sub{color:var(--muted); margin:6px 0 0}
+
+button,input,select,textarea{font:inherit; color:inherit}
+button{cursor:pointer; border:0; border-radius:10px; min-height:44px; padding:0 16px; font-weight:700}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--road); outline-offset:2px}
+.btn-main{background:var(--accent); color:var(--accent-ink)}
+.btn-road{background:var(--road); color:var(--road-ink)}
+.btn-ghost{background:transparent; color:var(--accent-text); border:2px solid var(--line)}
+.btn-danger{background:var(--danger); color:var(--surface)}
+.btn-link{background:none; color:var(--accent-text); min-height:auto; padding:0; text-decoration:underline; font-weight:700}
+button[disabled]{opacity:.5; cursor:not-allowed}
+
+.who{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:14px; display:flex; flex-wrap:wrap; gap:10px; align-items:center}
+.who label{font-weight:700}
+.who input{flex:1 1 160px; min-width:0}
+.who.need{border-color:var(--road); box-shadow:0 0 0 3px rgba(251,191,36,.45)}
+input,textarea{background:var(--bg); border:2px solid var(--line); border-radius:10px; min-height:44px; padding:8px 12px; width:100%}
+.actions{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+.actions button{min-height:54px; font-size:1.05rem}
+
+.form{background:var(--surface); border:2px solid var(--accent); border-radius:16px; padding:16px; display:flex; flex-direction:column; gap:14px}
+.form h2{font-size:1.3rem}
+.row{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+.field{display:flex; flex-direction:column; gap:4px; min-width:0}
+.field>span{font-size:.85rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.05em}
+.route-row{display:grid; grid-template-columns:1fr auto 1fr; gap:8px; align-items:end}
+.swap{min-height:44px; padding:0 10px; background:var(--soft); color:var(--ink)}
+.chips{display:flex; flex-wrap:wrap; gap:8px}
+.chip{background:var(--soft); color:var(--ink); border-radius:999px; min-height:36px; padding:0 12px; font-weight:400; font-size:.92rem}
+.stepper{display:flex; align-items:center; gap:10px}
+.stepper button{width:44px; padding:0; background:var(--soft); color:var(--ink); font-size:1.3rem}
+.stepper output{font-family:var(--f-display); font-size:1.5rem; min-width:2ch; text-align:center; font-variant-numeric:tabular-nums}
+.check{display:flex; gap:10px; align-items:center; font-weight:700}
+.check input{width:22px; height:22px; min-height:0}
+.form-btns{display:flex; gap:10px; flex-wrap:wrap}
+.form-btns .btn-main{flex:1}
+.err{color:var(--danger); font-weight:700; margin:0}
+
+.bar{display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap}
+.tabs{display:flex; background:var(--soft); border-radius:12px; padding:4px; gap:4px}
+.tabs button{min-height:38px; background:transparent; color:var(--muted); font-weight:700}
+.tabs button[aria-pressed="true"]{background:var(--surface); color:var(--ink); box-shadow:0 1px 3px rgba(0,0,0,.12)}
+
+.days{display:flex; flex-direction:column; gap:18px}
+.day{display:flex; flex-direction:column; gap:10px}
+.day h3{font-size:1.05rem; color:var(--muted); font-weight:700; padding-top:4px}
+.card{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:14px; display:flex; flex-direction:column; gap:10px}
+.card.req{background:transparent; border:2px dashed var(--line)}
+.top{display:flex; gap:12px; align-items:flex-start}
+.time{font-family:var(--f-display); font-weight:800; font-size:1.5rem; line-height:1; font-variant-numeric:tabular-nums; min-width:3.2em}
+.info{flex:1; min-width:0; display:flex; flex-direction:column; gap:4px}
+.route{display:flex; align-items:center; gap:8px; font-weight:700; font-size:1.08rem; flex-wrap:wrap; overflow-wrap:anywhere}
+.route i{display:inline-block; width:28px; height:3px; background:repeating-linear-gradient(90deg,var(--road) 0 6px,transparent 6px 10px)}
+.meta{color:var(--muted); font-size:.95rem; overflow-wrap:anywhere}
+.meta b{color:var(--ink)}
+.pill{flex:none; border-radius:999px; padding:4px 10px; font-weight:700; font-size:.85rem; white-space:nowrap}
+.pill.free{background:var(--road); color:var(--road-ink)}
+.pill.full{background:var(--soft); color:var(--muted)}
+.pill.done{background:var(--soft); color:var(--ok)}
+.seats{display:flex; flex-wrap:wrap; gap:6px; align-items:center}
+.seat{display:inline-flex; align-items:center; gap:4px; background:var(--soft); border-radius:999px; padding:4px 4px 4px 12px; font-size:.92rem}
+.seat.only{padding-right:12px}
+.seat button{min-height:28px; width:28px; padding:0; border-radius:999px; background:transparent; color:var(--muted); font-size:1rem}
+.seat.empty{background:transparent; border:1.5px dashed var(--line); color:var(--muted); padding-right:12px}
+.card-btns{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+.card-btns .btn-main,.card-btns .btn-road{flex:1 1 auto}
+.note{font-size:.95rem; background:var(--soft); border-radius:10px; padding:8px 10px; overflow-wrap:anywhere}
+
+.empty-state{background:var(--surface); border:1px dashed var(--line); border-radius:14px; padding:22px; text-align:center; color:var(--muted)}
+.notice{background:var(--soft); border-radius:12px; padding:12px 14px}
+.fallback{display:flex; flex-direction:column; gap:8px}
+.fallback textarea{min-height:160px; font-size:.9rem}
+.toast{position:fixed; left:50%; transform:translateX(-50%); bottom:16px; background:var(--ink); color:var(--bg); padding:12px 18px; border-radius:12px; font-weight:700; max-width:calc(100% - 32px); z-index:10}
+@media (max-width:420px){ .row{grid-template-columns:1fr} h1{font-size:1.6rem} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>blabla DLALF</h1>
+    <div class="road" aria-hidden="true"></div>
+    <p class="sub">Quien conduce publica su viaje y los demás se apuntan. Así no hace falta ir mirando el grupo.</p>
+  </header>
+
+  <section class="who" id="who">
+    <label for="nombre">¿Quién eres?</label>
+    <input id="nombre" list="nombres" placeholder="Tu nombre, p. ej. Tía Carmen" autocomplete="off">
+    <datalist id="nombres"></datalist>
+    <button class="btn-main" id="guardarNombre" type="button">Guardar</button>
+  </section>
+  <section class="who" id="whoOk" hidden>
+    <span>Hola, <b id="nombreTxt"></b></span>
+    <button class="btn-link" id="cambiarNombre" type="button">No soy yo</button>
+  </section>
+
+  <div class="notice" id="aviso" hidden></div>
+
+  <div class="actions" id="acciones">
+    <button class="btn-main" id="btnOfrezco" type="button">🚗 Ofrezco coche</button>
+    <button class="btn-road" id="btnBusco" type="button">🙋 Busco sitio</button>
+  </div>
+
+  <form class="form" id="form" hidden novalidate>
+    <h2 id="formTitulo">Ofrezco coche</h2>
+    <div class="field"><span>Rutas de siempre</span><div class="chips" id="rutasRapidas"></div></div>
+    <div class="route-row">
+      <label class="field"><span>Desde</span><input id="origen" list="lugares" placeholder="Valencia" autocomplete="off"></label>
+      <button class="swap" type="button" id="swap" aria-label="Intercambiar origen y destino">⇄</button>
+      <label class="field"><span>Hasta</span><input id="destino" list="lugares" placeholder="Zaragoza" autocomplete="off"></label>
+    </div>
+    <datalist id="lugares"></datalist>
+    <div class="row">
+      <label class="field"><span>Día</span><input type="date" id="fecha"></label>
+      <label class="field"><span>Hora de salida</span><input type="time" id="hora" value="10:00"></label>
+    </div>
+    <div class="field" id="plazasField">
+      <span>Plazas libres</span>
+      <div class="stepper">
+        <button type="button" id="menos" aria-label="Una plaza menos">−</button>
+        <output id="plazas">3</output>
+        <button type="button" id="mas" aria-label="Una plaza más">+</button>
+      </div>
+    </div>
+    <label class="check"><input type="checkbox" id="vuelta"> También la vuelta</label>
+    <div class="row" id="vueltaRow" hidden>
+      <label class="field"><span>Día de vuelta</span><input type="date" id="fechaV"></label>
+      <label class="field"><span>Hora de vuelta</span><input type="time" id="horaV" value="18:00"></label>
+    </div>
+    <label class="field"><span>Nota (opcional)</span><input id="nota" placeholder="Salgo desde casa de la abuela, cabe una maleta…" autocomplete="off"></label>
+    <p class="err" id="formErr" hidden></p>
+    <div class="form-btns">
+      <button class="btn-main" type="submit" id="publicar">Publicar viaje</button>
+      <button class="btn-ghost" type="button" id="cancelar">Cancelar</button>
+    </div>
+  </form>
+
+  <div class="bar">
+    <div class="tabs" role="group" aria-label="Qué viajes ver">
+      <button type="button" data-f="finde">Este finde</button>
+      <button type="button" data-f="todo">Todos los próximos</button>
+    </div>
+    <button class="btn-ghost" id="copiar" type="button">Copiar para WhatsApp</button>
+  </div>
+  <div class="fallback" id="fallback" hidden>
+    <span>Selecciona el texto y cópialo:</span>
+    <textarea id="fallbackTxt" readonly></textarea>
+  </div>
+
+  <main id="lista" aria-live="polite">
+    <div class="empty-state">Cargando viajes…</div>
+  </main>
+</div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+const LS={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+const $=id=>document.getElementById(id);
+const S={viajes:[],plazas:[],loaded:false,error:false,
+  filtro:LS.get('filtro')||'finde',nombre:LS.get('nombre')||'',tipo:'oferta',confirm:null,busy:false};
+
+/* ---------- conexión con Supabase ---------- */
+const CONFIG_OK=!!window.SUPABASE_URL&&!String(window.SUPABASE_URL).includes('PEGA_AQUI')&&!!window.supabase;
+const sb=CONFIG_OK?window.supabase.createClient(window.SUPABASE_URL,window.SUPABASE_KEY):null;
+const chk=r=>{if(r.error)throw r.error;return r.data;};
+async function listar(){
+  const[v,p]=await Promise.all([sb.from('viajes').select('*').gte('fecha',hoyISO()),sb.from('plazas').select('*')]);
+  return{viajes:chk(v),plazas:chk(p).map(x=>({id:x.id,viajeId:x.viaje_id,nombre:x.nombre,creado:Number(x.creado)||0}))};
+}
+const API={
+  listar,
+  async crearViajes(lista){chk(await sb.from('viajes').insert(lista.map(v=>({...v,plazas:v.tipo==='oferta'?v.plazas:null}))));return listar();},
+  async apuntar(p){chk(await sb.rpc('apuntar',{p_id:p.id,p_viaje:p.viajeId,p_nombre:p.nombre}));return listar();},
+  async quitarPlaza(id){chk(await sb.from('plazas').delete().eq('id',id));return listar();},
+  async llevar(id,nombre){chk(await sb.from('viajes').update({lleva:nombre||''}).eq('id',id));return listar();},
+  async borrarViaje(id){chk(await sb.from('viajes').delete().eq('id',id));return listar();}
+};
+const api=(fn,...args)=>API[fn](...args);
+function aplicar(d){if(!d)return;S.viajes=d.viajes||[];S.plazas=d.plazas||[];S.loaded=true;S.error=false;render();}
+function refrescar(){if(!sb)return;api('listar').then(aplicar).catch(()=>{if(!S.loaded){S.error=true;render();}});}
+let refT;function refrescarPronto(){clearTimeout(refT);refT=setTimeout(refrescar,400);}
+const nuevoId=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+
+function h(tag,props,...kids){const el=document.createElement(tag);
+  if(props)for(const[k,v]of Object.entries(props)){if(v==null||v===false)continue;
+    if(k==='class')el.className=v;else if(k==='text')el.textContent=v;
+    else if(k.startsWith('on'))el.addEventListener(k.slice(2),v);else el.setAttribute(k,v===true?'':v);}
+  for(const c of kids.flat()){if(c==null||c===false)continue;el.append(c.nodeType?c:document.createTextNode(String(c)));}
+  return el;}
+
+/* ---------- fechas ---------- */
+const pad=n=>String(n).padStart(2,'0');
+const iso=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const parse=s=>{const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)};
+const hoyISO=()=>iso(new Date());
+function rangoFinde(){const d=new Date();d.setHours(0,0,0,0);const w=d.getDay();
+  const vie=new Date(d);vie.setDate(d.getDate()+(w===0?-2:w===6?-1:5-w));
+  const dom=new Date(vie);dom.setDate(vie.getDate()+2);return[iso(vie),iso(dom)];}
+function sabadoISO(){const[v]=rangoFinde();const s=parse(v);s.setDate(s.getDate()+1);const hoy=hoyISO();return iso(s)<hoy?hoy:iso(s);}
+function etiquetaDia(s,corto){const d=parse(s);const hoy=new Date();hoy.setHours(0,0,0,0);
+  const diff=Math.round((d-hoy)/864e5);
+  let t=d.toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'short'}).replace('.','');
+  t=t.charAt(0).toUpperCase()+t.slice(1);
+  if(corto)return t;
+  return diff===0?`Hoy · ${t}`:diff===1?`Mañana · ${t}`:t;}
+
+/* ---------- nombres ---------- */
+const norm=s=>(s||'').trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+const mismo=(a,b)=>!!a&&!!b&&norm(a)===norm(b);
+const slug=s=>norm(s).replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40)||'x';
+
+/* ---------- datos derivados ---------- */
+const pasajeros=id=>S.plazas.filter(p=>p.viajeId===id).sort((a,b)=>(a.creado||0)-(b.creado||0));
+function visibles(){const hoy=hoyISO();let v=S.viajes.filter(x=>x.fecha&&x.fecha>=hoy);
+  if(S.filtro==='finde'){const[a,b]=rangoFinde();v=v.filter(x=>x.fecha>=a&&x.fecha<=b);}
+  return v.sort((x,y)=>(x.fecha+(x.hora||'')).localeCompare(y.fecha+(y.hora||'')));}
+function nombresConocidos(){const s=new Map();
+  for(const v of S.viajes){if(v.autor)s.set(norm(v.autor),v.autor);if(v.lleva)s.set(norm(v.lleva),v.lleva);}
+  for(const p of S.plazas)if(p.nombre)s.set(norm(p.nombre),p.nombre);
+  return[...s.values()].sort((a,b)=>a.localeCompare(b,'es'));}
+const RUTAS_FIJAS=['Torreciudad','Madrid','Zaragoza','Alicante','Pamplona'].flatMap(c=>[['Valencia',c],[c,'Valencia']]);
+function rutasFrecuentes(){const c=new Map();
+  for(const v of S.viajes){if(!v.origen||!v.destino)continue;const k=v.origen+'→'+v.destino;c.set(k,(c.get(k)||0)+1);}
+  const fijas=new Set(RUTAS_FIJAS.map(r=>norm(r.join('→'))));
+  const extra=[...c.entries()].filter(([k])=>!fijas.has(norm(k))).sort((a,b)=>b[1]-a[1]).slice(0,2).map(([k])=>k.split('→'));
+  return[...RUTAS_FIJAS,...extra];}
+
+/* ---------- avisos ---------- */
+let toastT;function toast(msg){const t=$('toast');t.textContent=msg;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,2800);}
+function needName(){if(S.nombre)return false;const w=$('who');w.classList.add('need');w.scrollIntoView({behavior:'smooth',block:'center'});$('nombre').focus();toast('Primero escribe tu nombre');return true;}
+async function escribir(fn,ok){if(S.busy)return;S.busy=true;
+  try{aplicar(await fn());if(ok)toast(ok);}
+  catch(e){const m=e&&e.message||'';
+    toast(/plazas|no existe/i.test(m)?m:'No se pudo guardar. Revisa la conexión e inténtalo otra vez.');refrescar();}
+  finally{S.busy=false;}}
+
+/* ---------- acciones ---------- */
+function apuntarme(v){if(needName())return;
+  escribir(()=>api('apuntar',{id:v.id+'__'+slug(S.nombre),viajeId:v.id,nombre:S.nombre.trim(),creado:Date.now()}),'¡Apuntado!');}
+function quitar(p){escribir(()=>api('quitarPlaza',p.id));}
+function llevar(v,si){if(needName())return;escribir(()=>api('llevar',v.id,si?S.nombre.trim():''),si?'¡Gracias!':null);}
+function borrar(v){S.confirm=null;escribir(()=>api('borrarViaje',v.id),'Viaje borrado');}
+
+/* ---------- pintar ---------- */
+function cardOferta(v){
+  const pas=pasajeros(v.id),libres=(v.plazas||0)-pas.length;
+  const yo=pas.find(p=>mismo(p.nombre,S.nombre)),soyConductor=mismo(v.autor,S.nombre);
+  const pill=libres>0?h('span',{class:'pill free',text:libres===1?'1 libre':`${libres} libres`}):h('span',{class:'pill full',text:'Completo'});
+  const seats=h('div',{class:'seats'},
+    pas.map(p=>{const puede=mismo(p.nombre,S.nombre)||soyConductor;
+      return h('span',{class:'seat'+(puede?'':' only')},p.nombre,puede?h('button',{type:'button','aria-label':`Quitar a ${p.nombre}`,title:'Quitar',onclick:()=>quitar(p)},'✕'):null);}),
+    Array.from({length:Math.max(0,libres)},()=>h('span',{class:'seat empty'},'libre')));
+  const btns=h('div',{class:'card-btns'});
+  if(soyConductor)btns.append(borrarBtn(v));
+  else if(yo)btns.append(h('button',{type:'button',class:'btn-ghost',onclick:()=>quitar(yo)},'Ya no voy'));
+  else btns.append(h('button',{type:'button',class:'btn-main',disabled:libres<=0,onclick:()=>apuntarme(v)},libres>0?'Me apunto':'Sin plazas'));
+  return h('article',{class:'card'},
+    h('div',{class:'top'},h('div',{class:'time',text:v.hora||'—'}),
+      h('div',{class:'info'},h('div',{class:'route'},v.origen,h('i',{'aria-hidden':'true'}),v.destino),
+        h('div',{class:'meta'},'Conduce ',h('b',{text:v.autor||'?'}),soyConductor?' (tú)':'')),pill),
+    seats,v.nota?h('div',{class:'note',text:v.nota}):null,btns);
+}
+function cardPeticion(v){
+  const soyYo=mismo(v.autor,S.nombre),loLlevo=mismo(v.lleva,S.nombre);
+  const pill=v.lleva?h('span',{class:'pill done',text:'Resuelto'}):h('span',{class:'pill free',text:'Busca sitio'});
+  const btns=h('div',{class:'card-btns'});
+  if(!soyYo&&!v.lleva)btns.append(h('button',{type:'button',class:'btn-road',onclick:()=>llevar(v,true)},'Yo le llevo'));
+  if(loLlevo)btns.append(h('button',{type:'button',class:'btn-ghost',onclick:()=>llevar(v,false)},'Al final no puedo'));
+  if(soyYo)btns.append(borrarBtn(v));
+  return h('article',{class:'card req'},
+    h('div',{class:'top'},h('div',{class:'time',text:v.hora||'—'}),
+      h('div',{class:'info'},h('div',{class:'route'},v.origen,h('i',{'aria-hidden':'true'}),v.destino),
+        h('div',{class:'meta'},h('b',{text:v.autor||'?'}),soyYo?' (tú)':'',' busca sitio'),
+        v.lleva?h('div',{class:'meta'},'Le lleva ',h('b',{text:v.lleva})):null),pill),
+    v.nota?h('div',{class:'note',text:v.nota}):null,btns.childNodes.length?btns:null);
+}
+function borrarBtn(v){
+  if(S.confirm===v.id)return h('span',{class:'card-btns'},
+    h('button',{type:'button',class:'btn-danger',onclick:()=>borrar(v)},'Sí, borrar'),
+    h('button',{type:'button',class:'btn-ghost',onclick:()=>{S.confirm=null;render();}},'No'));
+  return h('button',{type:'button',class:'btn-ghost',onclick:()=>{S.confirm=v.id;render();}},'Borrar');
+}
+
+function render(){
+  $('who').hidden=!!S.nombre;$('whoOk').hidden=!S.nombre;$('nombreTxt').textContent=S.nombre;
+  $('nombres').replaceChildren(...nombresConocidos().map(n=>h('option',{value:n})));
+  const lug=new Set(RUTAS_FIJAS.flat());S.viajes.forEach(v=>{v.origen&&lug.add(v.origen);v.destino&&lug.add(v.destino)});
+  $('lugares').replaceChildren(...[...lug].map(n=>h('option',{value:n})));
+  $('rutasRapidas').replaceChildren(...rutasFrecuentes().map(([o,d])=>h('button',{type:'button',class:'chip',onclick:()=>{$('origen').value=o;$('destino').value=d;}},`${o} → ${d}`)));
+  document.querySelectorAll('.tabs button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.f===S.filtro)));
+  const aviso=$('aviso');
+  if(!CONFIG_OK){aviso.hidden=false;aviso.textContent='Falta conectar la base de datos: rellena config.js con la URL y la clave pública de Supabase.';}
+  else if(S.error){aviso.hidden=false;aviso.textContent='No se han podido cargar los viajes. Revisa la conexión y recarga la página.';}
+  else aviso.hidden=true;
+  const lista=$('lista');
+  if(!S.loaded){lista.replaceChildren(h('div',{class:'empty-state'},S.error?'Sin conexión.':'Cargando viajes…'));return;}
+  const v=visibles();
+  if(!v.length){lista.replaceChildren(h('div',{class:'empty-state'},
+    S.filtro==='finde'?'Todavía no hay viajes para este finde. Si vas a ir en coche, pulsa «Ofrezco coche» y publícalo.':'No hay viajes próximos. Pulsa «Ofrezco coche» o «Busco sitio» para empezar.'));return;}
+  const dias=new Map();v.forEach(x=>{if(!dias.has(x.fecha))dias.set(x.fecha,[]);dias.get(x.fecha).push(x)});
+  lista.replaceChildren(h('div',{class:'days'},
+    [...dias.entries()].map(([f,xs])=>h('section',{class:'day'},h('h3',{text:etiquetaDia(f)}),xs.map(x=>x.tipo==='peticion'?cardPeticion(x):cardOferta(x))))));
+}
+
+/* ---------- formulario ---------- */
+let plazasN=3;
+function abrirForm(tipo){if(needName())return;S.tipo=tipo;const f=$('form');
+  $('formTitulo').textContent=tipo==='oferta'?'Ofrezco coche':'Busco sitio';
+  $('publicar').textContent=tipo==='oferta'?'Publicar viaje':'Publicar petición';
+  $('plazasField').hidden=tipo!=='oferta';
+  if(!$('fecha').value)$('fecha').value=sabadoISO();
+  $('fecha').min=hoyISO();$('fechaV').min=hoyISO();
+  $('formErr').hidden=true;f.hidden=false;f.scrollIntoView({behavior:'smooth',block:'start'});}
+function cerrarForm(){$('form').hidden=true;['origen','destino','nota'].forEach(i=>$(i).value='');$('vuelta').checked=false;$('vueltaRow').hidden=true;}
+$('btnOfrezco').onclick=()=>abrirForm('oferta');
+$('btnBusco').onclick=()=>abrirForm('peticion');
+$('cancelar').onclick=cerrarForm;
+$('swap').onclick=()=>{const o=$('origen').value;$('origen').value=$('destino').value;$('destino').value=o;};
+$('menos').onclick=()=>{plazasN=Math.max(1,plazasN-1);$('plazas').textContent=plazasN;};
+$('mas').onclick=()=>{plazasN=Math.min(8,plazasN+1);$('plazas').textContent=plazasN;};
+$('vuelta').onchange=e=>{$('vueltaRow').hidden=!e.target.checked;if(e.target.checked&&!$('fechaV').value){const d=parse($('fecha').value||sabadoISO());d.setDate(d.getDate()+1);$('fechaV').value=iso(d);}};
+$('form').addEventListener('submit',e=>{e.preventDefault();if(needName())return;
+  const o=$('origen').value.trim(),d=$('destino').value.trim(),f=$('fecha').value,hr=$('hora').value;
+  const err=m=>{$('formErr').textContent=m;$('formErr').hidden=false;};
+  if(!o||!d)return err('Pon desde dónde y hasta dónde.');
+  if(!f||!hr)return err('Pon el día y la hora.');
+  if(f<hoyISO())return err('Ese día ya ha pasado.');
+  const conVuelta=$('vuelta').checked,fv=$('fechaV').value,hv=$('horaV').value;
+  if(conVuelta&&(!fv||!hv))return err('Pon el día y la hora de la vuelta.');
+  if(conVuelta&&(fv+hv)<(f+hr))return err('La vuelta tiene que ser después de la ida.');
+  const base={tipo:S.tipo,autor:S.nombre.trim(),nota:$('nota').value.trim(),creado:Date.now(),plazas:S.tipo==='oferta'?plazasN:'',lleva:''};
+  const lista=[{...base,id:nuevoId(),origen:o,destino:d,fecha:f,hora:hr}];
+  if(conVuelta)lista.push({...base,id:nuevoId(),origen:d,destino:o,fecha:fv,hora:hv});
+  const[a,b]=rangoFinde();
+  escribir(async()=>{const r=await api('crearViajes',lista);cerrarForm();
+    if(S.filtro==='finde'&&(f<a||f>b)){S.filtro='todo';LS.set('filtro','todo');}return r;},
+    conVuelta?'Ida y vuelta publicadas':'Publicado');
+});
+
+/* ---------- nombre ---------- */
+function guardarNombre(){const n=$('nombre').value.trim();if(!n){$('nombre').focus();return;}
+  S.nombre=n;LS.set('nombre',n);$('who').classList.remove('need');render();toast(`Hola, ${n}`);}
+$('guardarNombre').onclick=guardarNombre;
+$('nombre').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();guardarNombre();}});
+$('cambiarNombre').onclick=()=>{S.nombre='';LS.set('nombre','');$('nombre').value='';render();$('nombre').focus();};
+
+/* ---------- filtros y copiar ---------- */
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{S.filtro=b.dataset.f;LS.set('filtro',S.filtro);render();});
+function resumen(){const v=visibles();const titulo=S.filtro==='finde'?'Viajes este finde':'Próximos viajes';
+  if(!v.length)return`🚗 ${titulo}: de momento no hay ninguno.`;
+  const out=[`🚗 *${titulo}*`];let dia='';
+  for(const x of v){if(x.fecha!==dia){dia=x.fecha;out.push('',`*${etiquetaDia(x.fecha,true)}*`);}
+    if(x.tipo==='peticion'){out.push(`• ${x.hora} ${x.origen} → ${x.destino}: ${x.autor} busca sitio`+(x.lleva?` (le lleva ${x.lleva})`:''));}
+    else{const p=pasajeros(x.id),l=(x.plazas||0)-p.length;
+      out.push(`• ${x.hora} ${x.origen} → ${x.destino}: conduce ${x.autor}, `+(l>0?`${l} ${l===1?'plaza libre':'plazas libres'}`:'completo')+(p.length?` (van ${p.map(q=>q.nombre).join(', ')})`:''));}}
+  out.push('','Apuntaos en blabla DLALF 👍');return out.join('\n');}
+$('copiar').onclick=()=>{const t=resumen();const fb=()=>{$('fallback').hidden=false;const ta=$('fallbackTxt');ta.value=t;ta.focus();ta.select();};
+  try{navigator.clipboard.writeText(t).then(()=>{$('fallback').hidden=true;toast('Copiado. Pégalo en el grupo');},fb);}catch(e){fb();}};
+
+/* ---------- arranque: carga, escucha cambios en tiempo real y revisa cada 30 s ---------- */
+render();refrescar();
+if(sb){
+  sb.channel('cambios')
+    .on('postgres_changes',{event:'*',schema:'public',table:'viajes'},refrescarPronto)
+    .on('postgres_changes',{event:'*',schema:'public',table:'plazas'},refrescarPronto)
+    .subscribe();
+}
+setInterval(()=>{if(!document.hidden&&!S.busy)refrescar();},30000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)refrescar();});
+</script>
+</body>
+</html>
