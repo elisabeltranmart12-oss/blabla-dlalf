@@ -15,6 +15,9 @@ create table if not exists viajes (
   creado  bigint
 );
 
+alter table viajes add column if not exists telefono text not null default ''
+  check (char_length(telefono) <= 20);
+
 create table if not exists plazas (
   id       text primary key,
   viaje_id text not null references viajes(id) on delete cascade,

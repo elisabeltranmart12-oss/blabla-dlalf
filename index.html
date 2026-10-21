@@ -96,6 +96,9 @@ input,textarea{background:var(--bg); border:2px solid var(--line); border-radius
 .seat.empty{background:transparent; border:1.5px dashed var(--line); color:var(--muted); padding-right:12px}
 .card-btns{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
 .card-btns .btn-main,.card-btns .btn-road{flex:1 1 auto}
+.contact{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+.contact .tel{font-weight:700; font-variant-numeric:tabular-nums; margin-right:4px}
+.contact a{display:inline-flex; align-items:center; min-height:36px; padding:0 12px; border-radius:999px; background:var(--soft); color:var(--ink); font-weight:700; font-size:.92rem; text-decoration:none}
 .note{font-size:.95rem; background:var(--soft); border-radius:10px; padding:8px 10px; overflow-wrap:anywhere}
 
 .empty-state{background:var(--surface); border:1px dashed var(--line); border-radius:14px; padding:22px; text-align:center; color:var(--muted)}
@@ -158,6 +161,7 @@ input,textarea{background:var(--bg); border:2px solid var(--line); border-radius
       <label class="field"><span>Día de vuelta</span><input type="date" id="fechaV"></label>
       <label class="field"><span>Hora de vuelta</span><input type="time" id="horaV" value="18:00"></label>
     </div>
+    <label class="field"><span>Tu teléfono (lo verán los demás)</span><input type="tel" id="telefono" inputmode="tel" autocomplete="tel" placeholder="600 123 456"></label>
     <label class="field"><span>Nota (opcional)</span><input id="nota" placeholder="Salgo desde casa de la abuela, cabe una maleta…" autocomplete="off"></label>
     <p class="err" id="formErr" hidden></p>
     <div class="form-btns">
@@ -274,6 +278,15 @@ function quitar(p){escribir(()=>api('quitarPlaza',p.id));}
 function llevar(v,si){if(needName())return;escribir(()=>api('llevar',v.id,si?S.nombre.trim():''),si?'¡Gracias!':null);}
 function borrar(v){S.confirm=null;escribir(()=>api('borrarViaje',v.id),'Viaje borrado');}
 
+/* ---------- teléfono ---------- */
+const soloDigitos=t=>(t||'').replace(/[^\d+]/g,'');
+function telValido(t){const d=soloDigitos(t).replace(/^\+/,'');return d.length>=9&&d.length<=15;}
+function telInternacional(t){let d=soloDigitos(t);if(d.startsWith('+'))return d.slice(1);if(d.startsWith('00'))return d.slice(2);return d.length===9?'34'+d:d;}
+function contacto(v){if(!v.telefono)return null;
+  return h('div',{class:'contact'},h('span',{class:'tel',text:'📞 '+v.telefono}),
+    h('a',{href:'tel:'+soloDigitos(v.telefono)},'Llamar'),
+    h('a',{href:'https://wa.me/'+telInternacional(v.telefono),target:'_blank',rel:'noopener'},'WhatsApp'));}
+
 /* ---------- pintar ---------- */
 function cardOferta(v){
   const pas=pasajeros(v.id),libres=(v.plazas||0)-pas.length;
@@ -291,7 +304,7 @@ function cardOferta(v){
     h('div',{class:'top'},h('div',{class:'time',text:v.hora||'—'}),
       h('div',{class:'info'},h('div',{class:'route'},v.origen,h('i',{'aria-hidden':'true'}),v.destino),
         h('div',{class:'meta'},'Conduce ',h('b',{text:v.autor||'?'}),soyConductor?' (tú)':'')),pill),
-    seats,v.nota?h('div',{class:'note',text:v.nota}):null,btns);
+    contacto(v),seats,v.nota?h('div',{class:'note',text:v.nota}):null,btns);
 }
 function cardPeticion(v){
   const soyYo=mismo(v.autor,S.nombre),loLlevo=mismo(v.lleva,S.nombre);
@@ -305,7 +318,7 @@ function cardPeticion(v){
       h('div',{class:'info'},h('div',{class:'route'},v.origen,h('i',{'aria-hidden':'true'}),v.destino),
         h('div',{class:'meta'},h('b',{text:v.autor||'?'}),soyYo?' (tú)':'',' busca sitio'),
         v.lleva?h('div',{class:'meta'},'Le lleva ',h('b',{text:v.lleva})):null),pill),
-    v.nota?h('div',{class:'note',text:v.nota}):null,btns.childNodes.length?btns:null);
+    contacto(v),v.nota?h('div',{class:'note',text:v.nota}):null,btns.childNodes.length?btns:null);
 }
 function borrarBtn(v){
   if(S.confirm===v.id)return h('span',{class:'card-btns'},
@@ -342,6 +355,7 @@ function abrirForm(tipo){if(needName())return;S.tipo=tipo;const f=$('form');
   $('publicar').textContent=tipo==='oferta'?'Publicar viaje':'Publicar petición';
   $('plazasField').hidden=tipo!=='oferta';
   if(!$('fecha').value)$('fecha').value=sabadoISO();
+  if(!$('telefono').value)$('telefono').value=LS.get('telefono')||'';
   $('fecha').min=hoyISO();$('fechaV').min=hoyISO();
   $('formErr').hidden=true;f.hidden=false;f.scrollIntoView({behavior:'smooth',block:'start'});}
 function cerrarForm(){$('form').hidden=true;['origen','destino','nota'].forEach(i=>$(i).value='');$('vuelta').checked=false;$('vueltaRow').hidden=true;}
@@ -361,7 +375,10 @@ $('form').addEventListener('submit',e=>{e.preventDefault();if(needName())return;
   const conVuelta=$('vuelta').checked,fv=$('fechaV').value,hv=$('horaV').value;
   if(conVuelta&&(!fv||!hv))return err('Pon el día y la hora de la vuelta.');
   if(conVuelta&&(fv+hv)<(f+hr))return err('La vuelta tiene que ser después de la ida.');
-  const base={tipo:S.tipo,autor:S.nombre.trim(),nota:$('nota').value.trim(),creado:Date.now(),plazas:S.tipo==='oferta'?plazasN:'',lleva:''};
+  const tel=$('telefono').value.trim();
+  if(!telValido(tel))return err('Pon tu teléfono para que puedan contactarte (por ejemplo 600 123 456).');
+  LS.set('telefono',tel);
+  const base={tipo:S.tipo,autor:S.nombre.trim(),telefono:tel.slice(0,20),nota:$('nota').value.trim(),creado:Date.now(),plazas:S.tipo==='oferta'?plazasN:'',lleva:''};
   const lista=[{...base,id:nuevoId(),origen:o,destino:d,fecha:f,hora:hr}];
   if(conVuelta)lista.push({...base,id:nuevoId(),origen:d,destino:o,fecha:fv,hora:hv});
   const[a,b]=rangoFinde();
